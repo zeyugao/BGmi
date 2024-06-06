@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Optional
 import click
 from loguru import logger
 from nicegui import ui
+import threading
 
 from bgmi.config import cfg
 from bgmi.lib import controllers as ctl
@@ -23,6 +24,13 @@ def async_wrapper(function: Any) -> Any:
         loop = asyncio.get_event_loop()
         result = await loop.run_in_executor(None, function, *args, **kwargs)
         return result
+
+    return wrapper
+
+
+def thread_wrapper(function: Any) -> Any:
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        threading.Thread(target=function, args=args, kwargs=kwargs).start()
 
     return wrapper
 
@@ -79,14 +87,21 @@ async def main_page() -> None:
     weekly_list = None
 
     async def refresh_weekly_list_tab(force_update=True, show_footer_loading=False):
-        nonlocal weekly_list
+        @thread_wrapper
+        def do_ctl_cal():
+            nonlocal weekly_list
+            context = show_footer("Refreshing...") \
+                if show_footer_loading \
+                else contextlib.nullcontext()
+            with context:
+                weekly_list = ctl.cal(
+                    cover=None,
+                    force_update=force_update,
+                    updating=only_show_updating_bgngumi_checkbox.value
+                )
+            weekly_list_tab.refresh()
 
-        context = show_footer("Refreshing...") \
-            if show_footer_loading \
-            else contextlib.nullcontext()
-        with context:
-            weekly_list = await wrapper_ctl_cal(force_update, only_show_updating_bgngumi_checkbox.value)
-        weekly_list_tab.refresh()
+        do_ctl_cal()
 
     async def refresh_bangumi_detail_tab():
         bangumi_detail_tab.refresh()
