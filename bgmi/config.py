@@ -57,6 +57,7 @@ class TransmissionConfig(BaseSetting):
     rpc_username: str = os.getenv("BGMI_TRANSMISSION_RPC_USERNAME") or "your_username"
     rpc_password: str = os.getenv("BGMI_TRANSMISSION_RPC_PASSWORD") or "your_password"
     rpc_path: str = os.getenv("BGMI_TRANSMISSION_RPC_PATH") or "/transmission/rpc"
+    labels: Optional[List[str]] = pydantic.Field(["bgmi"])
 
 
 class QBittorrentConfig(BaseSetting):
@@ -65,6 +66,7 @@ class QBittorrentConfig(BaseSetting):
     rpc_username: str = os.getenv("BGMI_QBITTORRENT_RPC_USERNAME") or "admin"
     rpc_password: str = os.getenv("BGMI_QBITTORRENT_RPC_PASSWORD") or "adminadmin"
     category: str = os.getenv("BGMI_QBITTORRENT_RPC_CATEGORY") or ""
+    tags: Optional[List[str]] = pydantic.Field(["bgmi"])
 
 
 class DelugeConfig(BaseSetting):
@@ -107,6 +109,7 @@ class Config(BaseSetting):
 
     db_path: pathlib.Path = Path(os.getenv("BGMI_DB_PATH") or str(BGMI_PATH.joinpath("bangumi.db")))
     script_path: pathlib.Path = Path(os.getenv("BGMI_SCRIPT_PATH") or str(BGMI_PATH.joinpath("scripts")))
+    hook_path: pathlib.Path = Path(os.getenv("BGMI_HOOK_PATH") or str(BGMI_PATH.joinpath("hooks")))
     tools_path: pathlib.Path = Path(os.getenv("BGMI_TOOLS_PATH") or str(BGMI_PATH.joinpath("tools")))
 
     max_path: int = 3
