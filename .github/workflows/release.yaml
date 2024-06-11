@@ -14,19 +14,19 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v4
-      - uses: Trim21/setup-poetry@dist/v1
+      - uses: actions/setup-python@v5
+      - uses: trim21/setup-poetry@dist/v2
 
       - run: poetry publish --build
         env:
           POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
 
-      # create github release
+      # create GitHub release
       - name: Get Tag Name
         run: echo "TAG=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
       - name: Set up Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
 
       - name: Install git-chglog
         run: |

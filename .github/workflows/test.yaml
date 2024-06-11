@@ -15,6 +15,10 @@ defaults:
   run:
     shell: bash
 
+concurrency:
+  group: '${{ github.workflow }}-${{ github.ref }}'
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ${{ format('{0}-latest', matrix.os) }}
@@ -27,13 +31,13 @@ jobs:
         with:
           fetch-depth: 2
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
 
-      - uses: Trim21/setup-poetry@dist/v1
+      - uses: trim21/setup-poetry@dist/v2
 
-      - uses: Trim21/install-poetry-project@dist/v1
+      - uses: trim21/install-poetry-project@dist/v2
 
       - name: test
         run: |
@@ -43,9 +47,10 @@ jobs:
           coverage run -a -m pytest tests --cache-requests --ignore=tests/downloader
 
       - run: coverage xml --omit templates/download_xml.generated.py
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v4
         with:
           flags: app,front
+          token: ${{ secrets.CODECOV_TOKEN }} # required
 
   test-all-pass:
     needs:

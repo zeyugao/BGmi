@@ -12,31 +12,16 @@ defaults:
     shell: bash
 
 jobs:
-  flake8:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-
-      - uses: Trim21/setup-poetry@dist/v1
-      - uses: Trim21/install-poetry-project@dist/v1
-
-      - name: flake8
-        run: "flake8 --format='::error file=%(path)s,line=%(row)d,col=%(col)d::[%(code)s]: %(text)s'"
-
   mypy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
       - uses: actions/checkout@v4
-      - uses: Trim21/setup-poetry@dist/v1
-      - uses: Trim21/install-poetry-project@dist/v1
-      - uses: liskin/gh-problem-matcher-wrap@v2
+      - uses: trim21/setup-poetry@dist/v2
+      - uses: trim21/install-poetry-project@dist/v2
+      - uses: liskin/gh-problem-matcher-wrap@v3
         with:
           action: add
           linters: mypy
@@ -55,13 +40,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
-      - uses: Trim21/setup-poetry@dist/v1
-      - uses: Trim21/install-poetry-project@dist/v1
-      - uses: actions/cache@v3
+      - uses: trim21/setup-poetry@dist/v2
+      - uses: trim21/install-poetry-project@dist/v2
+      - uses: actions/cache@v4
         with:
           path: ~/.cache/pre-commit
           key: precommit-2-${{ env.PY }}-${{ hashFiles('.pre-commit-config.yaml') }}
