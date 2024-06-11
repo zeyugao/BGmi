@@ -2,6 +2,7 @@ import qbittorrentapi
 from qbittorrentapi import TorrentState
 
 from bgmi.config import cfg
+from bgmi.session import session
 from bgmi.plugin.download import BaseDownloadService, DownloadStatus
 
 
@@ -20,8 +21,13 @@ class QBittorrentWebAPI(BaseDownloadService):
         pass
 
     def add_download(self, url: str, save_path: str):
+        torrent_resp = session.get(url)
+
+        torrent_resp.raise_for_status()
+        torrent_file = torrent_resp.content
+
         self.client.torrents_add(
-            urls=url,
+            torrent_files={'torrents': torrent_file},
             category=cfg.qbittorrent.category,
             save_path=save_path,
             is_paused=False,
