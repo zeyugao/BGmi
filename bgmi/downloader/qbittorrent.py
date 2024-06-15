@@ -21,13 +21,21 @@ class QBittorrentWebAPI(BaseDownloadService):
         pass
 
     def add_download(self, url: str, save_path: str):
-        torrent_resp = session.get(url)
+        torrent_files = None
+        urls = None
+        if url.startswith('http'):
+            torrent_resp = session.get(url)
 
-        torrent_resp.raise_for_status()
-        torrent_file = torrent_resp.content
+            torrent_resp.raise_for_status()
+            torrent_file = torrent_resp.content
+
+            torrent_files = torrent_file
+        else:
+            urls = url
 
         self.client.torrents_add(
-            torrent_files={'torrents': torrent_file},
+            torrent_files=torrent_files,
+            urls=urls,
             category=cfg.qbittorrent.category,
             save_path=save_path,
             is_paused=False,

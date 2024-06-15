@@ -100,10 +100,11 @@ def parse_episodes(content, bangumi_id, subtitle_list=None) -> List[Episode]:
 
         for tr in _container.find_all("tr")[1:]:
             title = tr.find("a", class_="magnet-link-wrap").text
-            time_string = tr.find_all("td")[2].string
+            all_td = tr.find_all("td")
+            time_string = all_td[2].string
             result.append(
                 Episode(
-                    download=tr.find("a", class_="magnet-link").attrs["data-clipboard-text"],
+                    download=server_root + all_td[3].find("a")["href"],
                     subtitle_group=str(subtitle_id),
                     title=title,
                     episode=parse_episode(title),
