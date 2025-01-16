@@ -458,7 +458,7 @@ def update(names: List[str], download: Optional[bool] = False, not_ignore: bool 
             download_prepare(failed)
 
     if download:
-        hook_runner.post_add_download()
+        hook_runner.post_add_download(downloaded=downloaded)
 
     return result
 
