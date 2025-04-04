@@ -2,22 +2,16 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "github>Trim21/renovate-config",
-    "github>Trim21/renovate-config:monthly",
-    "github>Trim21/renovate-config:poetry",
     "github>Trim21/renovate-config:app"
-  ],
-  "enabledManagers": [
-    "pre-commit",
-    "poetry",
-    "github-actions"
   ],
   "pre-commit": {
     "enabled": true
   },
   "baseBranches": [
-    "master",
-    "/^v\\d+$/"
+    "/^v\\d+$/",
+    "master"
   ],
+  "prConcurrentLimit": 4,
   "rangeStrategy": "pin",
   "separateMajorMinor": true,
   "lockFileMaintenance": {
@@ -27,14 +21,19 @@
   },
   "packageRules": [
     {
-      "automerge": true,
-      "matchUpdateTypes": [
-        "minor",
-        "patch",
-        "pin",
-        "pinDigest",
-        "digest"
-      ]
+      "matchBaseBranches": [
+        "master"
+      ],
+      "matchPackageNames": [
+        "pydantic"
+      ],
+      "allowedVersions": "<2"
+    },
+    {
+      "matchBaseBranches": [
+        "v5"
+      ],
+      "prPriority": 10
     },
     {
       "groupName": "pre-commit hooks",
@@ -50,16 +49,6 @@
         "anime-episode-parser"
       ],
       "rangeStrategy": "bump"
-    },
-    {
-      "groupName": "deps",
-      "matchManagers": [
-        "poetry"
-      ],
-      "matchDepTypes": [
-        "dependencies",
-        "dev-dependencies"
-      ]
     }
   ]
 }
