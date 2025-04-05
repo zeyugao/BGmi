@@ -37,8 +37,21 @@ COPY --from=builder /usr/local/lib/libcurl-* /usr/local/lib/
 COPY --from=builder /app/.venv /app/.venv
 ENV PATH="/app/.venv/bin:$PATH"
 
+WORKDIR /cron
+
+RUN set -x \
+    && apt-get update \
+    && apt-get install -y cron \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && chmod gu+rw /var/run \
+    && chmod gu+s /usr/sbin/cron
+
 WORKDIR /mount
+ENV PYTHONPATH="/mount"
 
 # Creates a non-root user with an explicit UID and adds permission to access the /app folder
-RUN adduser --uid 1000 --gid 100 --disabled-password --gecos "" appuser
+RUN adduser --uid 1000 --gid 100 --disabled-password --gecos "" appuser \
+    && touch /var/log/cron.log \
+    && chown -R appuser:users /var/log/cron.log
 USER appuser
