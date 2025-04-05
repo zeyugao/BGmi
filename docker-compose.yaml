@@ -1,0 +1,16 @@
+version: "3.4"
+
+services:
+  bgmi:
+    build: .
+    container_name: bgmi
+    volumes:
+      - "./:/mount/"
+      - "/mnt/cloud:/mnt/cloud"
+    restart: unless-stopped
+    environment:
+      - BGMI_PATH=/mount/data
+    ports:
+      - "8085:8080"
+    command: >
+      python3 -m bgmi.front.nice_server --host 0.0.0.0 --port 8080
