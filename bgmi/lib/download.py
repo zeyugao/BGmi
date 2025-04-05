@@ -3,6 +3,7 @@ import time
 import traceback
 from typing import List, cast
 
+from bgmi.downloader import qbittorrent
 import stevedore
 from stevedore.exception import NoMatches
 
@@ -16,10 +17,13 @@ from bgmi.website.base import Episode
 
 def get_download_driver(delegate: str) -> BaseDownloadService:
     try:
-        return cast(
-            BaseDownloadService,
-            stevedore.DriverManager(namespace.DOWNLOAD_DELEGATE, name=delegate, invoke_on_load=True).driver,
-        )
+        if delegate == "qbittorrent-webapi":
+            return qbittorrent.QBittorrentWebAPI()
+        else:
+            return cast(
+                BaseDownloadService,
+                stevedore.DriverManager(namespace.DOWNLOAD_DELEGATE, name=delegate, invoke_on_load=True).driver,
+            )
     except NoMatches:
         print_error(f"can't load download delegate {delegate}")
         raise
