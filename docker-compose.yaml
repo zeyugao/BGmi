@@ -3,6 +3,7 @@ version: "3.4"
 services:
   bgmi:
     build: .
+    image: bgmi
     container_name: bgmi
     volumes:
       - "./:/mount/"
