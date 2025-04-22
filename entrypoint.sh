@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# Define a function to handle termination signals
+handle_term() {
+  echo "Received termination signal. Shutting down gracefully..."
+  kill $(jobs -p)
+  exit 0
+}
+
+# Register the signal handlers
+trap handle_term SIGTERM SIGINT SIGHUP
+
 # Start the scheduler in background
 (
   while true; do

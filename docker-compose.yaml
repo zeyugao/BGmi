@@ -9,6 +9,7 @@ services:
       - "./:/mount/"
       - "/mnt/cloud:/mnt/cloud"
     restart: unless-stopped
+    init: true
     environment:
       - BGMI_PATH=/mount/data
     ports:
