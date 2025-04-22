@@ -36,4 +36,4 @@ trap handle_term SIGTERM SIGINT SIGHUP
 
 # Start the main application server
 echo "Starting BGmi server..."
-exec python -m bgmi.front.nice_server --host 0.0.0.0 --port 8080
+python -m bgmi.front.nice_server --host 0.0.0.0 --port 8080
